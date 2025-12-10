@@ -42,8 +42,15 @@ const App = () => {
   }
 
   const StatDisplay = ({text,stat,fontSize}) => {
+
+    const all = good + bad + neutral
     return (
-      <p style={{fontSize:"1em"}}>Good {good} <br></br> Neutral {neutral} <br></br>Bad {bad}</p>
+      <p style={{fontSize:"1em"}}>Good {good} <br></br> Neutral {neutral}
+       <br></br>Bad {bad} <br></br>All {all}<br></br>
+       Average {(good - bad) / (all) } <br></br>
+       Positive {(good / all) * 100} %
+       
+       </p>
     )
   }
 
@@ -55,7 +62,7 @@ const App = () => {
       <Button text="neutral" onClick={handleNeutralClick}></Button>
       <Button text="bad" onClick={handleBadClick}></Button>
      <Header text="statistics" size="2em"/>
-     <StatDisplay text="good"  />
+     <StatDisplay />
     
 
 
