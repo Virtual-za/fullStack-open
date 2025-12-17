@@ -6,6 +6,11 @@ const Button = ({text,onclick}) => {
     <button onClick={onclick}>{text}</button>
   )
 }
+const Header = ({text}) => {
+  return (
+    <p style={{fontSize: '3em',fontWeight:'bold' }}> {text}</p>
+  )
+}
 
 
 const App = () => {
@@ -19,45 +24,54 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-  const length = 8;
+  const length = anecdotes.length;
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(length).fill(0))
 
  function getRandomInt(max) {
-    return Math.floor(Math.random() * (max +1))
+    return Math.floor(Math.random() * max)
   }
    
-  
+   const getMaxVotes = () => {
+  const maxVotes = Math.max(...votes)
+  return votes.indexOf(maxVotes)
+ }
+
+ 
+
 
   const handdleVote = () => {
     const copy = [...votes]
     copy[selected] += 1
     setVotes(copy)
-    
+   console.log(copy,"click votes")
    
   }
      
-
-
-  
+ 
   const handleClick = () => {
   console.log(selected);
-       console.log(votes)
-  setSelected(getRandomInt(7))
+  console.log(votes,"click next") 
        
+  setSelected(getRandomInt(length))
+  
+  
   }
 
 
 
   return (
     <div>
+      <Header text="Anecdote of the day"/>
       {anecdotes[selected]}
       <br></br>
       has {votes[selected]} votes
       <br></br>
       <Button text={"Next Anecdote"} onclick={handleClick} />
       <Button text={"Vote"} onclick={handdleVote} />
-
+      <Header text="Anecdote with the most votes"/>
+      {anecdotes[getMaxVotes()]}<br></br>
+      has {votes[getMaxVotes()]} votes
     </div>
   )
 }
