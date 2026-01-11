@@ -1,3 +1,4 @@
+ import {useState} from "react"
  import Course from "./Components/course"
 
 const App = () => {
@@ -53,11 +54,7 @@ const App = () => {
     </div>
   )
 }
-const Courses = ({course}) => {
-  return (
-    course.map(courses => <Course key={courses.id} course={courses}></Course>)
-  )
-}
+
 
 
 export default App

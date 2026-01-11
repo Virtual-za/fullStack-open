@@ -36,6 +36,15 @@ const App = () => {
         id: persons.length + 1,
       };
 
+
+      //add person to server
+      axios
+      .post('http://localhost:3001/persons',personObject)
+      .then(Response => {console.log(Response)})
+
+
+
+
       setPersons(persons.concat(personObject));
     }
     setNewName("");
