@@ -36,7 +36,7 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1,
       };
-      
+
       //add person to server
       personService.create(personObject)
       setPersons(persons.concat(personObject));
@@ -44,6 +44,23 @@ const App = () => {
     setNewName("");
     setNewNumber("");
   };
+const handleDelete = (id, name) => {
+  if (!window.confirm(`Delete ${name}?`)) return;
+  console.log(id)
+  personService
+    .deleteItem(id)
+    .then(() => {
+      setPersons(persons.filter((p) => p.id !== id));
+    })
+    .catch((error) => {
+      alert(`Information of ${name} has already been removed from server`);
+      setPersons(persons.filter((p) => p.id !== id));
+    });
+};
+
+
+
+
   const handlePersonChange = (event) => {
     console.log(event.target.value);
     setNewName(event.target.value);
@@ -70,7 +87,8 @@ const App = () => {
       <h2>add a new</h2>
      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handlePersonChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-    <Persons filtered={filtered}/>
+    <Persons filtered={filtered}
+    handleDelete={handleDelete}/>
     
     </div>
   );
