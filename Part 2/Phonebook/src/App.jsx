@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 import Filter from "./Components/Filter.jsx";
 import PersonForm from "./Components/PersonForm.jsx";
 import Persons from "./Components/Persons.jsx";
 import personService from "./Services/persons.js";
+import Notification from "./Components/Notification.jsx";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [errorMessage,setErrorMessage] = useState(null)
+  const [successMessage,setSuccessMessage] = useState(null)
 
   const hook = () => {
     console.log("effect");
@@ -24,38 +27,54 @@ const App = () => {
     event.preventDefault();
 
     console.log("button clicked", event.target);
+    const existing = persons.find((p) => p.name === newName);
 
-    const isIncluded = persons.some((person) => person.name === newName);
-    if (isIncluded && persons.some((person) => person.number === newNumber)) {
-      alert(`${newName} is already added to phonebook`);
-    } else if (persons.some((person) => person.number !== newNumber)) {
-      {
+    if (existing) {
+      if (existing.number === newNumber) {
+        alert(`${newName} is already added to phonebook`);
+      } else {
         if (
           window.confirm(
-            `${newName} is already added to phonebook,replace the old number with a new one?`
+            `${newName} is already added to phonebook, replace the old number with a new one?`
           )
         ) {
-          const findName = persons.find((person) => person.name === newName);
-
-          const updatedItem = { ...findName, number: newNumber };
-          console.log(updatedItem);
-          personService.update(findName.id, updatedItem).then((response) => {
-            setPersons(
-              persons.map((p) => (p.id !== findName.id ? p : response.data))
-            );
-          });
+          const updatedItem = { ...existing, number: newNumber };
+          personService
+            .update(existing.id, updatedItem)
+            .then((response) => {
+              setPersons(
+                persons.map((p) => (p.id !== existing.id ? p : response.data))
+              );
+              setSuccessMessage(`Number replaced for ${existing.name}`);
+              setTimeout(() => setSuccessMessage(null), 5000);
+            })
+            .catch(() => {
+              setErrorMessage(
+                `Information of ${newName} has already been removed from the server`
+              );
+              setTimeout(() => setErrorMessage(null), 5000);
+              setPersons(persons.filter((p) => p.id !== existing.id));
+            });
         }
       }
     } else {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
       };
 
-      //add person to server
-      personService.create(personObject);
-      setPersons(persons.concat(personObject));
+      // add person to server and update UI with server response
+      personService
+        .create(personObject)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          setSuccessMessage(`Added ${response.data.name}`);
+          setTimeout(() => setSuccessMessage(null), 5000);
+        })
+        .catch(() => {
+          setErrorMessage("Failed to add person");
+          setTimeout(() => setErrorMessage(null), 5000);
+        });
     }
     setNewName("");
     setNewNumber("");
@@ -71,7 +90,12 @@ const App = () => {
         setPersons(persons.filter((p) => p.id !== id));
       })
       .catch((error) => {
-        alert(`Information of ${name} has already been removed from server`);
+        setErrorMessage(
+          `Information of ${name} has already been removed from the server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)}
+          ,5000)
         setPersons(persons.filter((p) => p.id !== id));
       });
   };
@@ -97,7 +121,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+    
+      <Notification message={successMessage} type="success"/>
+    <Notification message={errorMessage} type="error"/>
       <Filter filter={filter} handler={handleFilterChange} />
 
       <h2>add a new</h2>
@@ -111,7 +137,7 @@ const App = () => {
       <h2>Numbers</h2>
       <Persons filtered={filtered} handleDelete={handleDelete} />
     </div>
-  );
-};
+  );}
+  
 
 export default App;

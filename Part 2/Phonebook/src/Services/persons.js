@@ -5,11 +5,8 @@ const getAll = () => {
     return axios.get(baseURl)
 }
 const create = (newObject) => {
-    return axios
-    .post(baseURl,newObject)
-    .then(Response => console.log(Response));
-    
-}
+    return axios.post(baseURl, newObject);
+};
 
 
 
