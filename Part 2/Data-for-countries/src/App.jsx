@@ -21,8 +21,11 @@ const hook = () => {
   useEffect(hook,[])
 
 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   const handleCountryChange = (e) => {
     setNewCountry(e.target.value)
+    setSelectedCountry(null)
     console.log(e.target.value)
   }
 
@@ -32,12 +35,15 @@ const hook = () => {
         country.name?.common?.toLowerCase().includes(newCountry.toLowerCase())
       );
 
+  const handleDisplay = (country) => {
+    setSelectedCountry(country);
+  }
 
   return (
     <div>
       <CountryForm newCountry={newCountry} handleCountryChange={handleCountryChange} />
-      <CountryList filtered={filteredCountries} />
-      <CountryDisplay filtered={filteredCountries}/>
+      <CountryList filtered={filteredCountries} handleDisplay={handleDisplay} />
+      <CountryDisplay filtered={filteredCountries} selectedCountry={selectedCountry} />
 
     </div>
   )}
