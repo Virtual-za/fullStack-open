@@ -43,12 +43,23 @@ const hook = () => {
   }
 
   return (
-    <div>
-      <CountryForm newCountry={newCountry} handleCountryChange={handleCountryChange} />
-      <CountryList filtered={filteredCountries} handleDisplay={handleDisplay} />
-      <CountryDisplay filtered={filteredCountries} selectedCountry={selectedCountry} />
+    <div className="app">
+      <header className="app-header">
+        <h1>Country Finder</h1>
+        <p className="app-sub">Search countries and view details + weather</p>
+      </header>
 
+      <main className="app-main">
+        <aside className="search-panel">
+          <CountryForm newCountry={newCountry} handleCountryChange={handleCountryChange} />
+          <CountryList filtered={filteredCountries} handleDisplay={handleDisplay} />
+        </aside>
+
+        <section className="detail-panel">
+          <CountryDisplay filtered={filteredCountries} selectedCountry={selectedCountry} />
+        </section>
+      </main>
     </div>
-  )}
+  )} 
   
   export default App
