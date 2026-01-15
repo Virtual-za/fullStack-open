@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
 let persons = [
     { 
       "id": "1",
@@ -51,6 +52,20 @@ app.delete('/api/persons/:id',(req,res) => {
     const person = persons.filter(person => person.id !== id)
     res.json(person)
     res.status(204).end()
+})
+
+app.post('/api/persons',(req,res) => {
+    const maxId = persons.length > 0 
+    ? Math.max(...persons.map(p => Number(p.id) )) : 0
+
+    const person = req.body;
+    person.id = String(maxId + 1)
+
+    persons = persons.concat(person)
+
+    console.log(person)
+    res.json(person)
+
 })
 
 
