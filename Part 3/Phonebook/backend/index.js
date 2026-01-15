@@ -54,15 +54,33 @@ app.delete('/api/persons/:id',(req,res) => {
     res.status(204).end()
 })
 
-app.post('/api/persons',(req,res) => {
-    const maxId = persons.length > 0 
-    ? Math.max(...persons.map(p => Number(p.id) )) : 0
 
-    const person = req.body;
-    person.id = String(maxId + 1)
+const generateId = () => {
+const maxId = persons.length > 0 
+    ? Math.max(...persons.map(p => Number(p.id) )) : 0
+return String(maxId +1)
+}
+
+app.post('/api/persons',(req,res) => {
+    
+    const body = req.body;
+    //person.id = generateId
+
+     if (!body.name) {
+    return res.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+    
+}
 
     persons = persons.concat(person)
-//Actually needed to commit exercise 3.5
+
     console.log(person)
     res.json(person)
 
