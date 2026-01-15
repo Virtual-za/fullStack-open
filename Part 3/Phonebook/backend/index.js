@@ -62,7 +62,7 @@ app.post('/api/persons',(req,res) => {
     person.id = String(maxId + 1)
 
     persons = persons.concat(person)
-
+//Actually needed to commit exercise 3.5
     console.log(person)
     res.json(person)
 
